@@ -5,5 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 public interface MediaStorageService {
-    UUID storeFile(MultipartFile file);
+    String storeFile(MultipartFile file);
+    String getFileUrlByName(String fileName);
 }

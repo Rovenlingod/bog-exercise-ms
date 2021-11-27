@@ -2,12 +2,11 @@ package com.example.bogexercisems.service;
 
 import com.example.bogexercisems.exception.StorageException;
 import com.example.bogexercisems.properties.MinioProperties;
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.UploadObjectArgs;
-import io.minio.errors.MinioException;
+import io.minio.*;
+import io.minio.errors.*;
+import io.minio.http.Method;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,12 +17,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Log4j2
 @Service
@@ -32,27 +32,51 @@ public class MediaStorageServiceImpl implements MediaStorageService {
     @Value("${storage.location}")
     private String rootLocation;
     private MinioProperties minioProperties;
+    private MinioClient minioClient;
 
     @Autowired
     public MediaStorageServiceImpl(MinioProperties minioProperties) {
         this.minioProperties = minioProperties;
+        this.minioClient = MinioClient.builder()
+                .endpoint(minioProperties.getEndpoint())
+                .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
+                .build();
     }
 
     @Override
-    public UUID storeFile(MultipartFile file) {
-        UUID newFileName = UUID.randomUUID();
-        storeFileInLocalStorage(file, newFileName.toString());
+    public String storeFile(MultipartFile file) {
+        UUID newFileNameUUID = UUID.randomUUID();
+        String newFileName = newFileNameUUID + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+        storeFileInLocalStorage(file, newFileName);
         try {
-            uploadFileToMinio(newFileName.toString());
+            uploadFileToMinio(newFileName);
         } catch (IOException | NoSuchAlgorithmException | InvalidKeyException | MinioException e) {
             throw new StorageException("Exception occurred while uploading file to Minio", e);
         }
-        deleteFileFromLocalStorage(newFileName.toString());
+        deleteFileFromLocalStorage(newFileName);
         return newFileName;
     }
 
+    @Override
+    public String getFileUrlByName(String fileName) {
+        String url = null;
+        try {
+            url = minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                    .method(Method.GET)
+                    .bucket(minioProperties.getBucket())
+                    .object(fileName)
+                    .expiry(1, TimeUnit.HOURS)
+                    .build());
+        } catch (ErrorResponseException | InsufficientDataException | InternalException
+                | InvalidKeyException | InvalidResponseException | IOException
+                | NoSuchAlgorithmException | XmlParserException | ServerException e) {
+            log.warn("Could not load file with fileName: " + fileName + " from Minio server");
+        }
+        return url;
+    }
+
     private void storeFileInLocalStorage(MultipartFile file, String filename) {
-        String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + originalFileName);
@@ -74,13 +98,7 @@ public class MediaStorageServiceImpl implements MediaStorageService {
     }
 
     private void uploadFileToMinio(String fileName) throws IOException, NoSuchAlgorithmException, InvalidKeyException, MinioException {
-        MinioClient minioClient =
-                MinioClient.builder()
-                        .endpoint(minioProperties.getEndpoint())
-                        .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
-                        .build();
-        boolean found =
-                minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioProperties.getBucket()).build());
+        boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioProperties.getBucket()).build());
         if (!found) {
             minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioProperties.getBucket()).build());
         }
