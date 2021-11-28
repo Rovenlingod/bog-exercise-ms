@@ -1,23 +1,27 @@
 package com.example.bogexercisems.controller;
 
-import com.example.bogexercisems.service.MediaStorageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.bogexercisems.dto.ExerciseCreationRequest;
+import com.example.bogexercisems.service.ExerciseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.UUID;
 
 @RestController
 public class ExerciseController {
-    @Autowired
-    private MediaStorageService storageService;
 
-    @PostMapping("/test")
-    public ResponseEntity<String> storeFile(@RequestParam("file") MultipartFile file) {
-        return ResponseEntity.ok().body(storageService.storeFile(file).toString());
+    private ExerciseService exerciseService;
+
+    public ExerciseController(ExerciseService exerciseService) {
+        this.exerciseService = exerciseService;
     }
 
-    @GetMapping("/testget/{id}")
-    public ResponseEntity<String> getFile(@PathVariable("id") String id) {
-        return ResponseEntity.ok().body(storageService.getFileUrlByName(id));
+    @PostMapping("/exercise")
+    public ResponseEntity<Object> saveExercise(ExerciseCreationRequest exerciseCreationRequest) {
+        UUID id = exerciseService.createExercise(exerciseCreationRequest);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id.toString()).toUri();
+        return ResponseEntity.created(uri).build();
     }
 }

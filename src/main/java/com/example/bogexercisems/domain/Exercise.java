@@ -24,6 +24,9 @@ public class Exercise {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
+    @Column(name = "title")
+    private String title;
+
     @Column(name = "media_file")
     private String mediaFile;
 
