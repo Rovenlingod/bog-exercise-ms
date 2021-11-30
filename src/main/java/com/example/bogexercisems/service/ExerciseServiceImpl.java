@@ -6,9 +6,14 @@ import com.example.bogexercisems.dto.ExerciseDTO;
 import com.example.bogexercisems.exception.ExerciseException;
 import com.example.bogexercisems.mapper.ExerciseMapper;
 import com.example.bogexercisems.repository.ExerciseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
@@ -36,8 +41,23 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public ExerciseDTO getExerciseById(String id) {
         Exercise exercise = exerciseRepository
-                .findById(UUID.fromString(id))
-                .orElseThrow(() -> new ExerciseException("Exercise with id = " + id + " does not exist"));
+                .findByIdAndIsPublicTrue(UUID.fromString(id))
+                .orElseThrow(() -> new ExerciseException("Exercise with id = " + id + " does not exist or not for public access"));
         return exerciseMapper.exerciseToExerciseDTO(exercise);
+    }
+
+    @Override
+    public List<ExerciseDTO> getExercisesByIds(List<String> ids) {
+        List<Exercise> exercises = exerciseRepository
+                .findAllByIdInAndIsPublicTrue(ids.stream().map(UUID::fromString).collect(Collectors.toList()));
+        if (exercises.isEmpty()) throw new ExerciseException("Exercises from provided list are non-existent or are not for public use");
+        return exerciseMapper.toDtos(exercises);
+    }
+
+    @Override
+    public Page<ExerciseDTO> findAll(int pageNo, int size) {
+        Pageable paging = PageRequest.of(pageNo, size);
+        Page<Exercise> pagedResult = exerciseRepository.findAll(paging);
+        return pagedResult.map(e -> exerciseMapper.exerciseToExerciseDTO(e));
     }
 }

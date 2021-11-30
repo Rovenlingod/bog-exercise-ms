@@ -1,0 +1,5 @@
+insert into exercise (countdown, creator_id, is_public, media_file, muscle_type, title, exercise_id) values (1, '05ea06a451ee11ecbf630242ac130002', true, '1.gif', 'ABS', 'testTitle1', '0FF1034C34864A16890F248BA95B6BC8');
+insert into exercise (countdown, creator_id, is_public, media_file, muscle_type, title, exercise_id) values (1, '05ea06a451ee11ecbf630242ac130002', true, '1.gif', 'ABS', 'testTitle2', '7bba350a51f011ecbf630242ac130002');
+insert into exercise (countdown, creator_id, is_public, media_file, muscle_type, title, exercise_id) values (1, '05ea06a451ee11ecbf630242ac130002', true, '1.gif', 'ABS', 'testTitle3', '808ce6e051f011ecbf630242ac130002');
+insert into exercise (countdown, creator_id, is_public, media_file, muscle_type, title, exercise_id) values (1, '05ea06a451ee11ecbf630242ac130002', true, '1.gif', 'ABS', 'testTitle4', '8519524851f011ecbf630242ac130002');
+insert into exercise (countdown, creator_id, is_public, media_file, muscle_type, title, exercise_id) values (1, '05ea06a451ee11ecbf630242ac130002', false, '1.gif', 'ABS', 'testTitle5', '888881ba51f011ecbf630242ac130002');

@@ -41,6 +41,8 @@ public abstract class ExerciseMapper {
     })
     public abstract ExerciseDTO exerciseToExerciseDTO(Exercise exercise);
 
+    public abstract List<ExerciseDTO> toDtos(List<Exercise> exercises);
+
     public String map(MultipartFile value) {
         return null;
     }
