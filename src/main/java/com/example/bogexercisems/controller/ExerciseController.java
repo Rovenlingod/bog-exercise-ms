@@ -16,6 +16,7 @@ import java.util.UUID;
 
 @RestController
 @Validated
+@RequestMapping("/api/exercise")
 public class ExerciseController {
 
     private ExerciseService exerciseService;
@@ -24,7 +25,7 @@ public class ExerciseController {
         this.exerciseService = exerciseService;
     }
 
-    @PostMapping("/exercise")
+    @PostMapping
     public ResponseEntity<Object> saveExercise(ExerciseCreationRequest exerciseCreationRequest) {
         UUID id = exerciseService.createExercise(exerciseCreationRequest);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id.toString()).toUri();
@@ -36,12 +37,12 @@ public class ExerciseController {
         return ResponseEntity.ok().body(exerciseService.getExerciseById(id));
     }*/
 
-    @GetMapping("/exercise/{ids}")
+    @GetMapping("/{ids}")
     public ResponseEntity<List<ExerciseDTO>> getExercisesByIds(@PathVariable("ids") List<@Pattern(regexp = "^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", message = "some of the provided uuids have invalid format") String> ids) {
         return ResponseEntity.ok().body(exerciseService.getExercisesByIds(ids));
     }
 
-    @GetMapping("/exercise")
+    @GetMapping
     public ResponseEntity<Page<ExerciseDTO>> getAllPageable(@RequestParam(value = "pageNo", defaultValue = "1") int pageNo, @RequestParam(value = "pageSize", defaultValue = "5") int pageSize) {
         return ResponseEntity.ok().body(exerciseService.findAll(pageNo, pageSize));
     }
