@@ -2,6 +2,7 @@ package com.example.bogexercisems.controller;
 
 import com.example.bogexercisems.dto.ExerciseCreationRequest;
 import com.example.bogexercisems.dto.ExerciseDTO;
+import com.example.bogexercisems.dto.PageDTO;
 import com.example.bogexercisems.service.ExerciseService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class ExerciseController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ExerciseDTO>> getAllPageable(@RequestParam(value = "pageNo", defaultValue = "1") int pageNo, @RequestParam(value = "pageSize", defaultValue = "5") int pageSize) {
+    public ResponseEntity<PageDTO<ExerciseDTO>> getAllPageable(@RequestParam(value = "pageNo", defaultValue = "0") int pageNo, @RequestParam(value = "pageSize", defaultValue = "3") int pageSize) {
         return ResponseEntity.ok().body(exerciseService.findAll(pageNo, pageSize));
     }
 }

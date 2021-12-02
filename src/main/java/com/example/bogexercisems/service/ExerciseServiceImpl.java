@@ -3,8 +3,10 @@ package com.example.bogexercisems.service;
 import com.example.bogexercisems.domain.Exercise;
 import com.example.bogexercisems.dto.ExerciseCreationRequest;
 import com.example.bogexercisems.dto.ExerciseDTO;
+import com.example.bogexercisems.dto.PageDTO;
 import com.example.bogexercisems.exception.ExerciseException;
 import com.example.bogexercisems.mapper.ExerciseMapper;
+import com.example.bogexercisems.mapper.PageMapper;
 import com.example.bogexercisems.repository.ExerciseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,13 +23,16 @@ public class ExerciseServiceImpl implements ExerciseService {
     private MediaStorageService mediaStorageService;
     private ExerciseMapper exerciseMapper;
     private ExerciseRepository exerciseRepository;
+    private PageMapper pageMapper;
 
     public ExerciseServiceImpl(MediaStorageService mediaStorageService,
                                ExerciseMapper exerciseMapper,
-                               ExerciseRepository exerciseRepository) {
+                               ExerciseRepository exerciseRepository,
+                               PageMapper pageMapper) {
         this.mediaStorageService = mediaStorageService;
         this.exerciseMapper = exerciseMapper;
         this.exerciseRepository = exerciseRepository;
+        this.pageMapper = pageMapper;
     }
 
     @Override
@@ -55,9 +60,9 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public Page<ExerciseDTO> findAll(int pageNo, int size) {
+    public PageDTO<ExerciseDTO> findAll(int pageNo, int size) {
         Pageable paging = PageRequest.of(pageNo, size);
         Page<Exercise> pagedResult = exerciseRepository.findAll(paging);
-        return pagedResult.map(e -> exerciseMapper.exerciseToExerciseDTO(e));
+        return pageMapper.toDto(pagedResult.map(e -> exerciseMapper.exerciseToExerciseDTO(e)));
     }
 }
