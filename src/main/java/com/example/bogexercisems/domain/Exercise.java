@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,9 +21,13 @@ public class Exercise {
 
     @Id
     @Column(name = "exercise_id")
+    @Type(type="uuid-char")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
+
+    @Column(name = "title")
+    private String title;
 
     @Column(name = "media_file")
     private String mediaFile;
