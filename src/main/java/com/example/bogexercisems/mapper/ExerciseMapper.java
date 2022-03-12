@@ -22,7 +22,7 @@ import java.util.UUID;
 public abstract class ExerciseMapper {
 
     @Autowired
-    private EquipmentRepository equipmentRepository;
+    protected EquipmentRepository equipmentRepository;
     @Autowired
     protected MediaStorageService mediaStorageService;
 
