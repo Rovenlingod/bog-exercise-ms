@@ -1,7 +1,7 @@
 package com.example.bogexercisems;
 
 import com.example.bogexercisems.domain.Exercise;
-import com.example.bogexercisems.repository.DataAccessHelper;
+//import com.example.bogexercisems.repository.DataAccessHelper;
 import com.example.bogexercisems.repository.ExerciseRepository;
 import org.hamcrest.Matchers;
 import org.junit.After;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class RepositoryTests {
-
+/*
     @Autowired
     private ExerciseRepository exerciseRepository;
     @Autowired
@@ -67,5 +67,5 @@ public class RepositoryTests {
 //            assertThat("List equality without order",
 //                    exerciseRepository.findAllByIdIn(ids).get(), containsInAnyOrder(expectedResult));
 //        });
-    }
+    }*/
 }
