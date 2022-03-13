@@ -1,25 +1,13 @@
 package com.example.bogexercisems;
 
 import com.example.bogexercisems.domain.Exercise;
-import com.example.bogexercisems.repository.DataAccessHelper;
 import com.example.bogexercisems.repository.ExerciseRepository;
-import org.hamcrest.Matchers;
-import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,8 +15,8 @@ public class RepositoryTests {
 
     @Autowired
     private ExerciseRepository exerciseRepository;
-    @Autowired
-    private DataAccessHelper helper;
+//    @Autowired
+//    private DataAccessHelper helper;
 
     private Exercise firstExercise;
     private Exercise secondExercise;

@@ -47,7 +47,7 @@ public class Exercise {
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "Exercise_Equipment",
+            name = "exercise_equipment",
             joinColumns = { @JoinColumn(name = "exercise_id") },
             inverseJoinColumns = { @JoinColumn(name = "equipment_id") }
     )
