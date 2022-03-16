@@ -27,7 +27,7 @@ public abstract class ExerciseMapper {
 
     @Mappings({
             @Mapping(source = "title", target = "title"),
-            @Mapping(target = "creatorId", expression = "java(java.util.UUID.fromString(exerciseCreationRequest.getCreatorId()))"),
+            @Mapping(target = "creatorId", expression = "java((java.util.UUID.fromString(((com.example.bogexercisems.feign.feignDtos.UserDetailsDTO) org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUuid())))"),
             @Mapping(target = "equipment", expression = "java(this.map(exerciseCreationRequest.getEquipmentIds()))")
     })
     public abstract Exercise exerciseCreationRequestToExercise(ExerciseCreationRequest exerciseCreationRequest);

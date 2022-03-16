@@ -17,6 +17,5 @@ public class ExerciseCreationRequest {
     private MultipartFile mediaFile;
     private Long countdownInSeconds;
     private MuscleType muscleType;
-    private String creatorId;
     private List<String> equipmentIds;
 }
