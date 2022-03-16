@@ -43,7 +43,7 @@ public class MapperTests {
         request.setMediaFile(new MockMultipartFile("/", new byte[1]));
         request.setCountdownInSeconds(1L);
         request.setMuscleType(MuscleType.ABS);
-        request.setCreatorId(UUID.randomUUID().toString());
+        //request.setCreatorId(UUID.randomUUID().toString());
         List<String> equipmentIds = new ArrayList<>();
         equipmentIds.add("8adc58fa-5057-11ec-bf63-0242ac130002");
         request.setEquipmentIds(equipmentIds);

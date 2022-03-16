@@ -5,12 +5,15 @@ import com.example.bogexercisems.dto.ExerciseCreationRequest;
 import com.example.bogexercisems.dto.ExerciseDTO;
 import com.example.bogexercisems.dto.PageDTO;
 import com.example.bogexercisems.exception.ExerciseException;
+import com.example.bogexercisems.feign.feignDtos.UserDetailsDTO;
 import com.example.bogexercisems.mapper.ExerciseMapper;
 import com.example.bogexercisems.mapper.PageMapper;
 import com.example.bogexercisems.repository.ExerciseRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
