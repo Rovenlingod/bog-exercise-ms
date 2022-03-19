@@ -9,6 +9,7 @@ import com.example.bogexercisems.feign.feignDtos.UserDetailsDTO;
 import com.example.bogexercisems.mapper.ExerciseMapper;
 import com.example.bogexercisems.mapper.PageMapper;
 import com.example.bogexercisems.repository.ExerciseRepository;
+import com.example.bogexercisems.utilities.CustomUtility;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -48,17 +50,34 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     public ExerciseDTO getExerciseById(String id) {
-        Exercise exercise = exerciseRepository
-                .findByIdAndIsPublicTrue(UUID.fromString(id))
-                .orElseThrow(() -> new ExerciseException("Exercise with id = " + id + " does not exist or not for public access"));
+        Optional<UserDetailsDTO> currentUser = CustomUtility.getCurrentUser();
+        Exercise exercise;
+        if (!currentUser.isPresent()) {
+            exercise = exerciseRepository
+                    .findByIdAndIsPublicTrue(UUID.fromString(id))
+                    .orElseThrow(() -> new ExerciseException("Exercise with id = " + id + " does not exist or not for public access"));
+        } else {
+            exercise = exerciseRepository
+                    .findExerciseByIdForCurrentUser(UUID.fromString(id), UUID.fromString(currentUser.get().getUuid()))
+                    .orElseThrow(() -> new ExerciseException("Exercise with id = " + id + " does not exist"));
+        }
         return exerciseMapper.exerciseToExerciseDTO(exercise);
     }
 
     @Override
     public List<ExerciseDTO> getExercisesByIds(List<String> ids) {
-        List<Exercise> exercises = exerciseRepository
-                .findAllByIdInAndIsPublicTrue(ids.stream().map(UUID::fromString).collect(Collectors.toList()));
-        if (exercises.isEmpty()) throw new ExerciseException("Exercises from provided list are non-existent or are not for public use");
+        Optional<UserDetailsDTO> currentUser = CustomUtility.getCurrentUser();
+        List<Exercise> exercises;
+        if (!currentUser.isPresent()) {
+            exercises = exerciseRepository
+                    .findAllByIdInAndIsPublicTrue(ids.stream().map(UUID::fromString).collect(Collectors.toList()));
+        } else {
+            exercises = exerciseRepository
+                    .findAllForCurrent(ids.stream().map(UUID::fromString).collect(Collectors.toList()),
+                            UUID.fromString(currentUser.get().getUuid()));
+        }
+        if (exercises.isEmpty())
+            throw new ExerciseException("Exercises from provided list are non-existent or are not for public use");
         return exerciseMapper.toDtos(exercises);
     }
 

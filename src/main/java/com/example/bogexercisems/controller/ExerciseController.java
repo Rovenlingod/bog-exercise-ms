@@ -33,7 +33,7 @@ public class ExerciseController {
         return ResponseEntity.created(uri).build();
     }
 
-/*    @GetMapping("/exercise/{id}")
+/*    @GetMapping("/{id}")
     public ResponseEntity<ExerciseDTO> getExerciseById(@PathVariable("id") @Pattern(regexp = "^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$", message = "invalid uuid format") String id) {
         return ResponseEntity.ok().body(exerciseService.getExerciseById(id));
     }*/

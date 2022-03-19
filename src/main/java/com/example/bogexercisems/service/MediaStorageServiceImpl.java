@@ -29,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class MediaStorageServiceImpl implements MediaStorageService {
 
+    //TODO: create uploads directory (if possible)
+
     @Value("${storage.location}")
     private String rootLocation;
     private MinioProperties minioProperties;

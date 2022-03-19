@@ -14,6 +14,7 @@ import java.util.List;
 public class ExerciseCreationRequest {
     private String title;
     private Boolean isPublic;
+    // TODO: validate for null
     private MultipartFile mediaFile;
     private Long countdownInSeconds;
     private MuscleType muscleType;
