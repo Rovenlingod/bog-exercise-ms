@@ -52,7 +52,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     public ExerciseDTO getExerciseById(String id) {
         Optional<UserDetailsDTO> currentUser = CustomUtility.getCurrentUser();
         Exercise exercise;
-        if (!currentUser.isPresent()) {
+        if (currentUser.isEmpty()) {
             exercise = exerciseRepository
                     .findByIdAndIsPublicTrue(UUID.fromString(id))
                     .orElseThrow(() -> new ExerciseException("Exercise with id = " + id + " does not exist or not for public access"));
@@ -68,7 +68,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     public List<ExerciseDTO> getExercisesByIds(List<String> ids) {
         Optional<UserDetailsDTO> currentUser = CustomUtility.getCurrentUser();
         List<Exercise> exercises;
-        if (!currentUser.isPresent()) {
+        if (currentUser.isEmpty()) {
             exercises = exerciseRepository
                     .findAllByIdInAndIsPublicTrue(ids.stream().map(UUID::fromString).collect(Collectors.toList()));
         } else {
